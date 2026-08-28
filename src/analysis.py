@@ -1,35 +1,26 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Load the student performance dataset
-data = pd.read_csv("data/student-mat.csv", sep=";")
+df = pd.read_csv("results/preprocessed_student_data.csv")
 
-# Display basic information
-print("First 5 rows:")
-print(data.head())
+print("Dataset shape:", df.shape)
+print("\nFirst 5 rows:")
+print(df.head())
 
-print("\nDataset shape:")
-print(data.shape)
+print("\nSummary statistics:")
+print(df.describe())
 
-print("\nAverage marks:")
-print("G1:", data["G1"].mean())
-print("G2:", data["G2"].mean())
-print("G3:", data["G3"].mean())
+if "G3" in df.columns:
+    print("\nCorrelation with final grade:")
+    print(df.corr(numeric_only=True)["G3"].sort_values(ascending=False))
 
-# Study time vs final grade
-study_performance = data.groupby("studytime")["G3"].mean()
+    plt.figure(figsize=(8, 5))
+    plt.hist(df["G3"], bins=10)
+    plt.xlabel("Final Grade (G3)")
+    plt.ylabel("Number of Students")
+    plt.title("Distribution of Final Grades")
+    plt.tight_layout()
+    plt.savefig("results/final_grade_distribution.png")
+    plt.show()
 
-print("\nAverage final grade by study time:")
-print(study_performance)
-
-# Attendance/absence analysis
-print("\nAverage absences:", data["absences"].mean())
-
-# Plot study time vs final grade
-study_performance.plot(kind="bar")
-plt.title("Study Time vs Final Grade")
-plt.xlabel("Study Time")
-plt.ylabel("Average Final Grade")
-plt.tight_layout()
-plt.savefig("results/study_time_vs_final_grade.png")
-plt.show()
+print("\nAnalysis completed successfully.")
